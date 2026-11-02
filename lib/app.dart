@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'features/home/home_screen.dart';
 import 'features/profile/profile_controller.dart';
+import 'services/audio/music_service.dart';
 import 'shared/theme/app_theme.dart';
 
 class NumberFlowApp extends ConsumerStatefulWidget {
@@ -18,6 +19,7 @@ class _NumberFlowAppState extends ConsumerState<NumberFlowApp> with WidgetsBindi
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    ref.read(musicServiceProvider).setEnabled(ref.read(profileProvider).settings.music);
   }
 
   @override
@@ -32,10 +34,19 @@ class _NumberFlowAppState extends ConsumerState<NumberFlowApp> with WidgetsBindi
     if (state == AppLifecycleState.resumed) {
       ref.read(profileProvider.notifier).refreshDay();
     }
+    switch (state) {
+      case AppLifecycleState.resumed:
+        ref.read(musicServiceProvider).setForeground(true);
+      case AppLifecycleState.hidden || AppLifecycleState.paused:
+        ref.read(musicServiceProvider).setForeground(false);
+      default:
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    ref.listen(profileProvider.select((p) => p.settings.music),
+        (_, on) => ref.read(musicServiceProvider).setEnabled(on));
     return MaterialApp(
       title: 'Number Flow',
       debugShowCheckedModeBanner: false,

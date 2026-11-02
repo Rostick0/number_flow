@@ -14,6 +14,7 @@ import '../../game/modes/mode_registry.dart';
 import '../../services/ads/ad_service.dart';
 import '../../services/audio/audio_service.dart';
 import '../../services/audio/feedback_service.dart';
+import '../../services/audio/music_service.dart';
 import '../profile/game_result.dart';
 import '../profile/profile_controller.dart';
 import 'game_view_state.dart';
@@ -85,6 +86,7 @@ class GameController extends AutoDisposeFamilyNotifier<GameViewState, GameLaunch
       _events.close();
     });
     _startLoop();
+    ref.read(musicServiceProvider).nextTrack();
     return _compose();
   }
 
@@ -258,6 +260,7 @@ class GameController extends AutoDisposeFamilyNotifier<GameViewState, GameLaunch
     _summary = null;
     _generation++;
     if (!_events.isClosed) _events.add(const []);
+    ref.read(musicServiceProvider).nextTrack();
     _emit();
   }
 

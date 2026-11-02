@@ -54,6 +54,12 @@ class SettingsScreen extends ConsumerWidget {
                     onChanged: (v) => profile.updateSettings((s) => s.copyWith(sound: v)),
                   ),
                   SwitchListTile(
+                    secondary: const Icon(Icons.music_note_rounded),
+                    title: const Text('Музыка', style: TextStyle(fontWeight: FontWeight.w700)),
+                    value: settings.music,
+                    onChanged: (v) => profile.updateSettings((s) => s.copyWith(music: v)),
+                  ),
+                  SwitchListTile(
                     secondary: const Icon(Icons.vibration_rounded),
                     title: const Text('Вибрация', style: TextStyle(fontWeight: FontWeight.w700)),
                     value: settings.vibration,

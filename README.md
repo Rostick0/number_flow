@@ -64,7 +64,7 @@ lib/
   services/
     storage/       SharedPreferences + JSON
     ads/           AdService (интерфейс), YandexAdService, NoAdService, политика частоты
-    audio/         звуки (audioplayers) и вибрация
+    audio/         звуки, фоновая музыка (audioplayers) и вибрация
   shared/          тема, общие виджеты
 ```
 
@@ -95,4 +95,7 @@ lib/
 
 - Звуки синтезированы скриптом [tool/gen_sfx.py](tool/gen_sfx.py) — собственная
   работа, без сторонних лицензий.
+- Фоновая музыка (4 спокойных трека, играют в случайном порядке) синтезирована
+  скриптом [tool/gen_music.py](tool/gen_music.py) — тоже собственная работа.
+  Пересборка: `python3 tool/gen_music.py assets/music` (нужны numpy и ffmpeg).
 - Иконка нарисована скриптом [tool/gen_icon.py](tool/gen_icon.py).
