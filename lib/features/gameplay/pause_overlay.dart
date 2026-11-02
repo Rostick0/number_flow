@@ -28,10 +28,10 @@ class PauseOverlay extends ConsumerWidget {
             style: TextStyle(fontSize: 28, fontWeight: FontWeight.w900),
           ),
           const SizedBox(height: 4),
-          const Text(
+          Text(
             'Партия сохранена — её можно продолжить позже',
             textAlign: TextAlign.center,
-            style: TextStyle(color: AppColors.inkSoft),
+            style: TextStyle(color: context.colors.inkSoft),
           ),
           const SizedBox(height: 20),
           FilledButton.icon(
@@ -96,14 +96,14 @@ class _Toggle extends StatelessWidget {
       toggled: on,
       label: label,
       child: Material(
-        color: on ? AppColors.accent : AppColors.background,
+        color: on ? context.colors.accent : context.colors.background,
         borderRadius: BorderRadius.circular(16),
         child: InkWell(
           borderRadius: BorderRadius.circular(16),
           onTap: onTap,
           child: SizedBox.square(
             dimension: 52,
-            child: Icon(icon, color: on ? Colors.white : AppColors.inkSoft),
+            child: Icon(icon, color: on ? Colors.white : context.colors.inkSoft),
           ),
         ),
       ),
@@ -125,7 +125,10 @@ class ModalBarrierOverlay extends StatelessWidget {
         duration: const Duration(milliseconds: 220),
         curve: Curves.easeOut,
         builder: (context, t, child) => ColoredBox(
-          color: AppColors.ink.withValues(alpha: 0.45 * t),
+          // Tinted with ink on light themes; ink is light on dark ones.
+          color: context.colors.brightness == Brightness.dark
+              ? Colors.black.withValues(alpha: 0.6 * t)
+              : context.colors.ink.withValues(alpha: 0.45 * t),
           child: Opacity(
             opacity: t,
             child: Transform.scale(scale: 0.94 + 0.06 * t, child: child),
@@ -138,7 +141,7 @@ class ModalBarrierOverlay extends StatelessWidget {
               child: ConstrainedBox(
                 constraints: const BoxConstraints(maxWidth: 400),
                 child: Material(
-                  color: AppColors.surface,
+                  color: context.colors.surface,
                   borderRadius: BorderRadius.circular(28),
                   child: Padding(padding: const EdgeInsets.all(22), child: child),
                 ),

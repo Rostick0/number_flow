@@ -115,9 +115,9 @@ class _GameScreenState extends ConsumerState<GameScreen> with WidgetsBindingObse
                       SizedBox(
                         height: 22,
                         child: removeMode
-                            ? const Text(
+                            ? Text(
                                 'Нажми на блок, чтобы убрать его',
-                                style: TextStyle(color: AppColors.danger, fontWeight: FontWeight.w800),
+                                style: TextStyle(color: context.colors.danger, fontWeight: FontWeight.w800),
                               )
                             : _Fill(launch: widget.launch),
                       ),
@@ -173,11 +173,11 @@ class _Header extends ConsumerWidget {
             child: Text(
               '$best',
               maxLines: 1,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.w900,
                 height: 1.1,
-                color: AppColors.inkSoft,
+                color: context.colors.inkSoft,
               ),
             ),
           ),
@@ -203,11 +203,11 @@ class _ScoreBox extends StatelessWidget {
         children: [
           Text(
             label,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 10,
               letterSpacing: 1,
               fontWeight: FontWeight.w800,
-              color: AppColors.inkSoft,
+              color: context.colors.inkSoft,
             ),
           ),
           FittedBox(fit: BoxFit.scaleDown, alignment: Alignment.centerLeft, child: child),
@@ -229,7 +229,7 @@ class _SquareButton extends StatelessWidget {
     return Tooltip(
       message: tooltip,
       child: Material(
-        color: AppColors.surface,
+        color: context.colors.surface,
         borderRadius: BorderRadius.circular(16),
         child: InkWell(
           borderRadius: BorderRadius.circular(16),
@@ -273,18 +273,18 @@ class _InfoRow extends ConsumerWidget {
                   _Chip(
                     icon: Icons.timer_outlined,
                     text: '${time ~/ 60}:${(time % 60).toString().padLeft(2, '0')}',
-                    color: time <= 15 ? AppColors.danger : null,
+                    color: time <= 15 ? context.colors.danger : null,
                   ),
                 if (target != null) _Chip(icon: Icons.flag_rounded, text: 'Цель $target'),
                 if (combo >= 2)
                   _Chip(
                     icon: Icons.bolt_rounded,
                     text: 'Комбо ×${multiplier.toStringAsFixed(1)}',
-                    color: AppColors.accent,
+                    color: context.colors.accent,
                   ),
-                if (doubleArmed) const _Chip(icon: Icons.filter_2_rounded, text: 'Double', color: AppColors.accent),
+                if (doubleArmed) _Chip(icon: Icons.filter_2_rounded, text: 'Double', color: context.colors.accent),
                 if (slow > 0)
-                  _Chip(icon: Icons.hourglass_bottom_rounded, text: '${slow + 1} c', color: AppColors.accent),
+                  _Chip(icon: Icons.hourglass_bottom_rounded, text: '${slow + 1} c', color: context.colors.accent),
               ],
             ),
           ),
@@ -305,11 +305,11 @@ class _Chip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final fg = color == null ? AppColors.ink : Colors.white;
+    final fg = color == null ? context.colors.ink : Colors.white;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: BoxDecoration(
-        color: color ?? AppColors.surface,
+        color: color ?? context.colors.surface,
         borderRadius: BorderRadius.circular(12),
       ),
       child: Row(

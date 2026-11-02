@@ -79,7 +79,7 @@ class _BoardEffectsState extends State<BoardEffects> {
           _add((k, done) => _Burst(
                 key: k,
                 center: g.center(e.anchor),
-                color: TilePalette.colorFor(e.resultTile.value),
+                color: context.colors.tileColor(e.resultTile.value),
                 radius: g.cell * (0.9 + 0.15 * e.chain),
                 count: 12 + 4 * e.chain,
                 onDone: done,
@@ -97,7 +97,7 @@ class _BoardEffectsState extends State<BoardEffects> {
           _add((k, done) => _Burst(
                 key: k,
                 center: g.center(e.at),
-                color: AppColors.stone,
+                color: context.colors.stone,
                 radius: g.cell * 0.8,
                 count: 10,
                 onDone: done,
@@ -107,7 +107,7 @@ class _BoardEffectsState extends State<BoardEffects> {
           _add((k, done) => _Burst(
                 key: k,
                 center: g.center(e.at),
-                color: e.tile.isStone ? AppColors.stone : TilePalette.colorFor(e.tile.value),
+                color: e.tile.isStone ? context.colors.stone : context.colors.tileColor(e.tile.value),
                 radius: g.cell * 0.8,
                 count: 14,
                 onDone: done,
@@ -303,9 +303,9 @@ class _FloatingText extends _OneShot {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            _OutlinedText(text, fontSize: fontSize, color: AppColors.ink),
+            _OutlinedText(text, fontSize: fontSize, color: context.colors.ink),
             if (caption != null)
-              _OutlinedText(caption!, fontSize: fontSize * 0.7, color: AppColors.accent),
+              _OutlinedText(caption!, fontSize: fontSize * 0.7, color: context.colors.accent),
           ],
         ),
       ),
@@ -335,7 +335,7 @@ class _Banner extends _OneShot {
             child: Container(
               padding: EdgeInsets.symmetric(horizontal: fontSize, vertical: fontSize * 0.45),
               decoration: BoxDecoration(
-                color: AppColors.accent,
+                color: context.colors.accent,
                 borderRadius: BorderRadius.circular(fontSize),
                 boxShadow: const [BoxShadow(color: Color(0x33000000), blurRadius: 16)],
               ),
@@ -373,7 +373,7 @@ class _OutlinedText extends StatelessWidget {
             foreground: Paint()
               ..style = PaintingStyle.stroke
               ..strokeWidth = fontSize * 0.18
-              ..color = Colors.white,
+              ..color = context.colors.background,
           ),
         ),
         Text(text, style: style.copyWith(color: color)),

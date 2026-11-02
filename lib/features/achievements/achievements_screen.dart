@@ -87,10 +87,10 @@ class _DailyTab extends ConsumerWidget {
           ),
           const SizedBox(height: 10),
         ],
-        const Text(
+        Text(
           'Новые задания появляются каждый день.',
           textAlign: TextAlign.center,
-          style: TextStyle(color: AppColors.inkSoft),
+          style: TextStyle(color: context.colors.inkSoft),
         ),
       ],
     );
@@ -168,25 +168,25 @@ class _ProgressCard extends StatelessWidget {
               children: [
                 Text(title, style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 15)),
                 if (subtitle != null)
-                  Text(subtitle!, style: const TextStyle(color: AppColors.inkSoft, fontSize: 13)),
+                  Text(subtitle!, style: TextStyle(color: context.colors.inkSoft, fontSize: 13)),
                 const SizedBox(height: 8),
                 ClipRRect(
                   borderRadius: BorderRadius.circular(6),
                   child: LinearProgressIndicator(
                     value: target == 0 ? 1 : progress / target,
                     minHeight: 8,
-                    backgroundColor: AppColors.background,
-                    valueColor: AlwaysStoppedAnimation(done ? AppColors.success : AppColors.accent),
+                    backgroundColor: context.colors.background,
+                    valueColor: AlwaysStoppedAnimation(done ? context.colors.success : context.colors.accent),
                   ),
                 ),
                 const SizedBox(height: 4),
-                Text('$progress / $target', style: const TextStyle(fontSize: 12, color: AppColors.inkSoft)),
+                Text('$progress / $target', style: TextStyle(fontSize: 12, color: context.colors.inkSoft)),
               ],
             ),
           ),
           const SizedBox(width: 12),
           if (claimed)
-            const Icon(Icons.check_circle_rounded, color: AppColors.success, size: 32)
+            Icon(Icons.check_circle_rounded, color: context.colors.success, size: 32)
           else
             FilledButton(
               style: FilledButton.styleFrom(

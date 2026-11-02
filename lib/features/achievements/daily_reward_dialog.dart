@@ -36,7 +36,7 @@ class _DailyRewardDialog extends ConsumerWidget {
               const SizedBox(height: 4),
               Text(
                 'День $streak подряд',
-                style: const TextStyle(color: AppColors.inkSoft, fontWeight: FontWeight.w700),
+                style: TextStyle(color: context.colors.inkSoft, fontWeight: FontWeight.w700),
               ),
               const SizedBox(height: 16),
               LoginStreakStrip(highlight: weekDay),
@@ -99,8 +99,8 @@ class _Day extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bg = current ? AppColors.accent : (done ? AppColors.success : AppColors.background);
-    final fg = current || done ? Colors.white : AppColors.ink;
+    final bg = current ? context.colors.accent : (done ? context.colors.success : context.colors.background);
+    final fg = current || done ? Colors.white : context.colors.ink;
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 8),
       decoration: BoxDecoration(color: bg, borderRadius: BorderRadius.circular(12)),

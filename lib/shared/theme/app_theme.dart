@@ -1,36 +1,40 @@
 import 'package:flutter/material.dart';
 
 import 'app_colors.dart';
+import 'game_themes.dart';
 
-ThemeData buildAppTheme() {
+ThemeData buildAppTheme([GameTheme theme = GameTheme.classic]) {
+  final AppColors c = theme.colors;
   final scheme = ColorScheme.fromSeed(
-    seedColor: AppColors.accent,
-    surface: AppColors.surface,
-  ).copyWith(primary: AppColors.accent);
+    seedColor: c.accent,
+    brightness: c.brightness,
+    surface: c.surface,
+  ).copyWith(primary: c.accent, onPrimary: Colors.white, onSurface: c.ink, error: c.danger);
   final base = ThemeData(useMaterial3: true, colorScheme: scheme);
   return base.copyWith(
-    scaffoldBackgroundColor: AppColors.background,
-    appBarTheme: const AppBarTheme(
-      backgroundColor: AppColors.background,
-      foregroundColor: AppColors.ink,
+    extensions: [c],
+    scaffoldBackgroundColor: c.background,
+    appBarTheme: AppBarTheme(
+      backgroundColor: c.background,
+      foregroundColor: c.ink,
       elevation: 0,
       scrolledUnderElevation: 0,
       centerTitle: true,
       titleTextStyle: TextStyle(
-        color: AppColors.ink,
+        color: c.ink,
         fontSize: 20,
         fontWeight: FontWeight.w800,
       ),
     ),
     textTheme: base.textTheme.apply(
-      bodyColor: AppColors.ink,
-      displayColor: AppColors.ink,
+      bodyColor: c.ink,
+      displayColor: c.ink,
     ),
-    cardTheme: const CardThemeData(
-      color: AppColors.surface,
+    cardTheme: CardThemeData(
+      color: c.surface,
       elevation: 0,
       margin: EdgeInsets.zero,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(18))),
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(18))),
     ),
     filledButtonTheme: FilledButtonThemeData(
       style: FilledButton.styleFrom(
@@ -42,16 +46,17 @@ ThemeData buildAppTheme() {
     outlinedButtonTheme: OutlinedButtonThemeData(
       style: OutlinedButton.styleFrom(
         minimumSize: const Size(0, 48),
-        foregroundColor: AppColors.ink,
-        side: const BorderSide(color: AppColors.board, width: 2),
+        foregroundColor: c.ink,
+        side: BorderSide(color: c.board, width: 2),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
       ),
     ),
     dialogTheme: DialogThemeData(
-      backgroundColor: AppColors.surface,
+      backgroundColor: c.surface,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
     ),
+    bottomSheetTheme: BottomSheetThemeData(backgroundColor: c.surface),
     switchTheme: SwitchThemeData(
       thumbColor: WidgetStateProperty.resolveWith(
         (s) => s.contains(WidgetState.selected) ? Colors.white : null,

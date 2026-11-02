@@ -207,10 +207,10 @@ class _LogoState extends State<_Logo> with SingleTickerProviderStateMixin {
           textAlign: TextAlign.center,
           style: TextStyle(fontSize: 40, fontWeight: FontWeight.w900, letterSpacing: -1),
         ),
-        const Text(
+        Text(
           'собирай числа, пока поток не захлестнул поле',
           textAlign: TextAlign.center,
-          style: TextStyle(color: AppColors.inkSoft, fontWeight: FontWeight.w600),
+          style: TextStyle(color: context.colors.inkSoft, fontWeight: FontWeight.w600),
         ),
       ],
     );
@@ -237,7 +237,7 @@ class _BestCard extends ConsumerWidget {
     return Panel(
       child: Row(
         children: [
-          const Icon(Icons.emoji_events_rounded, color: AppColors.coin, size: 34),
+          Icon(Icons.emoji_events_rounded, color: context.colors.coin, size: 34),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
@@ -245,7 +245,7 @@ class _BestCard extends ConsumerWidget {
               children: [
                 Text(
                   target == null ? 'Лучший результат' : 'Сегодня: цель $target',
-                  style: const TextStyle(color: AppColors.inkSoft, fontWeight: FontWeight.w700),
+                  style: TextStyle(color: context.colors.inkSoft, fontWeight: FontWeight.w700),
                 ),
                 Text(
                   target == null ? '$best' : '${daily.$1}',
@@ -255,9 +255,9 @@ class _BestCard extends ConsumerWidget {
             ),
           ),
           if (target != null && daily.$2)
-            const Tooltip(
+            Tooltip(
               message: 'Цель дня выполнена',
-              child: Icon(Icons.check_circle_rounded, color: AppColors.success, size: 30),
+              child: Icon(Icons.check_circle_rounded, color: context.colors.success, size: 30),
             ),
         ],
       ),
@@ -306,7 +306,7 @@ class _ModePicker extends StatelessWidget {
             current.subtitle,
             key: ValueKey(current.id),
             textAlign: TextAlign.center,
-            style: const TextStyle(color: AppColors.inkSoft, fontWeight: FontWeight.w600),
+            style: TextStyle(color: context.colors.inkSoft, fontWeight: FontWeight.w600),
           ),
         ),
       ],
@@ -330,7 +330,7 @@ class _ModeCard extends StatelessWidget {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 180),
         decoration: BoxDecoration(
-          color: selected ? AppColors.accent : AppColors.surface,
+          color: selected ? context.colors.accent : context.colors.surface,
           borderRadius: BorderRadius.circular(18),
         ),
         child: Material(
@@ -342,14 +342,14 @@ class _ModeCard extends StatelessWidget {
               padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 6),
               child: Column(
                 children: [
-                  Icon(icon, color: selected ? Colors.white : AppColors.ink),
+                  Icon(icon, color: selected ? Colors.white : context.colors.ink),
                   const SizedBox(height: 6),
                   FittedBox(
                     child: Text(
                       title,
                       style: TextStyle(
                         fontWeight: FontWeight.w800,
-                        color: selected ? Colors.white : AppColors.ink,
+                        color: selected ? Colors.white : context.colors.ink,
                       ),
                     ),
                   ),
@@ -374,7 +374,7 @@ class _MenuTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: AppColors.surface,
+      color: context.colors.surface,
       borderRadius: BorderRadius.circular(18),
       child: InkWell(
         borderRadius: BorderRadius.circular(18),
@@ -386,7 +386,7 @@ class _MenuTile extends StatelessWidget {
               Badge(
                 isLabelVisible: badge > 0,
                 label: Text('$badge'),
-                child: Icon(icon, color: AppColors.ink),
+                child: Icon(icon, color: context.colors.ink),
               ),
               const SizedBox(height: 4),
               FittedBox(

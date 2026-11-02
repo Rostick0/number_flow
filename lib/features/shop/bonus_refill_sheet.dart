@@ -15,7 +15,7 @@ import '../profile/profile_controller.dart';
 Future<bool> showBonusRefillSheet(BuildContext context, BonusType type) async {
   final result = await showModalBottomSheet<bool>(
     context: context,
-    backgroundColor: AppColors.surface,
+    backgroundColor: context.colors.surface,
     showDragHandle: true,
     shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
@@ -70,7 +70,7 @@ class _RefillSheetState extends ConsumerState<_RefillSheet> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Icon(bonusIcon(t), size: 40, color: AppColors.accent),
+            Icon(bonusIcon(t), size: 40, color: context.colors.accent),
             const SizedBox(height: 8),
             Text(
               t.title,
@@ -81,7 +81,7 @@ class _RefillSheetState extends ConsumerState<_RefillSheet> {
             Text(
               t.description,
               textAlign: TextAlign.center,
-              style: const TextStyle(color: AppColors.inkSoft, fontSize: 15),
+              style: TextStyle(color: context.colors.inkSoft, fontSize: 15),
             ),
             const SizedBox(height: 20),
             FilledButton.icon(
@@ -104,7 +104,7 @@ class _RefillSheetState extends ConsumerState<_RefillSheet> {
                 child: Text(
                   'Не хватает ${t.price - coins} монет',
                   textAlign: TextAlign.center,
-                  style: const TextStyle(color: AppColors.inkSoft),
+                  style: TextStyle(color: context.colors.inkSoft),
                 ),
               ),
           ],

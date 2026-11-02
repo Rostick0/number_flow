@@ -10,6 +10,7 @@ import '../../shared/theme/app_colors.dart';
 import '../../shared/widgets/common.dart';
 import '../profile/economy.dart';
 import '../profile/profile_controller.dart';
+import '../settings/theme_picker.dart';
 
 class ShopScreen extends ConsumerStatefulWidget {
   const ShopScreen({super.key});
@@ -57,10 +58,10 @@ class _ShopScreenState extends ConsumerState<ShopScreen> {
         child: ListView(
           padding: const EdgeInsets.all(16),
           children: [
-            const Text(
+            Text(
               'Бонусы помогают в трудный момент. В одной партии каждый можно '
               'применить не больше 3 раз.',
-              style: TextStyle(color: AppColors.inkSoft),
+              style: TextStyle(color: context.colors.inkSoft),
             ),
             const SizedBox(height: 12),
             for (final t in BonusType.values) ...[
@@ -72,10 +73,10 @@ class _ShopScreenState extends ConsumerState<ShopScreen> {
                       width: 48,
                       height: 48,
                       decoration: BoxDecoration(
-                        color: AppColors.background,
+                        color: context.colors.background,
                         borderRadius: BorderRadius.circular(14),
                       ),
-                      child: Icon(bonusIcon(t), color: AppColors.accent),
+                      child: Icon(bonusIcon(t), color: context.colors.accent),
                     ),
                     const SizedBox(width: 12),
                     Expanded(
@@ -83,7 +84,7 @@ class _ShopScreenState extends ConsumerState<ShopScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(t.title, style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 16)),
-                          Text(t.description, style: const TextStyle(color: AppColors.inkSoft, fontSize: 13)),
+                          Text(t.description, style: TextStyle(color: context.colors.inkSoft, fontSize: 13)),
                           Text(
                             'Есть: ${profile.bonusCount(t)}',
                             style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 13),
@@ -113,6 +114,17 @@ class _ShopScreenState extends ConsumerState<ShopScreen> {
               const SizedBox(height: 10),
             ],
             const SizedBox(height: 8),
+            const Panel(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Темы', style: TextStyle(fontWeight: FontWeight.w900, fontSize: 16)),
+                  SizedBox(height: 12),
+                  ThemePicker(),
+                ],
+              ),
+            ),
+            const SizedBox(height: 18),
             Panel(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -122,7 +134,7 @@ class _ShopScreenState extends ConsumerState<ShopScreen> {
                   Text(
                     'Посмотри короткую рекламу и получи ${Economy.adCoins} монет. '
                     'Осталось сегодня: $adsLeft',
-                    style: const TextStyle(color: AppColors.inkSoft),
+                    style: TextStyle(color: context.colors.inkSoft),
                   ),
                   const SizedBox(height: 12),
                   ValueListenableBuilder<bool>(

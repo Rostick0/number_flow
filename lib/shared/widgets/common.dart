@@ -16,9 +16,9 @@ class CoinIcon extends StatelessWidget {
       width: size,
       height: size,
       decoration: BoxDecoration(
-        color: AppColors.coin,
+        color: context.colors.coin,
         shape: BoxShape.circle,
-        border: Border.all(color: const Color(0xFFD99A22), width: size * 0.1),
+        border: Border.all(color: context.colors.coinEdge, width: size * 0.1),
       ),
       alignment: Alignment.center,
       child: Text(
@@ -44,7 +44,7 @@ class CoinBadge extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final coins = ref.watch(profileProvider.select((p) => p.coins));
     return Material(
-      color: AppColors.surface,
+      color: context.colors.surface,
       borderRadius: BorderRadius.circular(20),
       child: InkWell(
         borderRadius: BorderRadius.circular(20),
@@ -79,7 +79,7 @@ class Panel extends StatelessWidget {
   Widget build(BuildContext context) {
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: color ?? AppColors.surface,
+        color: color ?? context.colors.surface,
         borderRadius: BorderRadius.circular(18),
       ),
       child: Padding(padding: padding, child: child),

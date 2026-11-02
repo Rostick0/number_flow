@@ -52,7 +52,7 @@ class StatisticsScreen extends ConsumerWidget {
                         child: Column(
                           children: [
                             FittedBox(
-                              child: Text(m.title, style: const TextStyle(color: AppColors.inkSoft, fontWeight: FontWeight.w700)),
+                              child: Text(m.title, style: TextStyle(color: context.colors.inkSoft, fontWeight: FontWeight.w700)),
                             ),
                             FittedBox(
                               child: Text(
@@ -62,7 +62,7 @@ class StatisticsScreen extends ConsumerWidget {
                             ),
                             Text(
                               'партий: ${s.gamesByMode[m.id] ?? 0}',
-                              style: const TextStyle(fontSize: 12, color: AppColors.inkSoft),
+                              style: TextStyle(fontSize: 12, color: context.colors.inkSoft),
                             ),
                           ],
                         ),
@@ -79,7 +79,7 @@ class StatisticsScreen extends ConsumerWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
                 child: Row(
                   children: [
-                    Icon(icon, color: AppColors.accent),
+                    Icon(icon, color: context.colors.accent),
                     const SizedBox(width: 12),
                     Expanded(child: Text(label, style: const TextStyle(fontWeight: FontWeight.w600))),
                     Text(value, style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 16)),

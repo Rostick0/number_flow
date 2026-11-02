@@ -79,7 +79,7 @@ class _RulesDialogState extends State<_RulesDialog> {
                       SingleChildScrollView(
                         child: Column(
                           children: [
-                            Icon(s.icon, size: 36, color: AppColors.accent),
+                            Icon(s.icon, size: 36, color: context.colors.accent),
                             const SizedBox(height: 12),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -101,7 +101,7 @@ class _RulesDialogState extends State<_RulesDialog> {
                             Text(
                               s.text,
                               textAlign: TextAlign.center,
-                              style: const TextStyle(fontSize: 15, color: AppColors.inkSoft, height: 1.35),
+                              style: TextStyle(fontSize: 15, color: context.colors.inkSoft, height: 1.35),
                             ),
                           ],
                         ),
@@ -120,7 +120,7 @@ class _RulesDialogState extends State<_RulesDialog> {
                       width: i == _page ? 18 : 7,
                       height: 7,
                       decoration: BoxDecoration(
-                        color: i == _page ? AppColors.accent : AppColors.board,
+                        color: i == _page ? context.colors.accent : context.colors.board,
                         borderRadius: BorderRadius.circular(4),
                       ),
                     ),

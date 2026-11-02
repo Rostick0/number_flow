@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -47,10 +48,19 @@ class _NumberFlowAppState extends ConsumerState<NumberFlowApp> with WidgetsBindi
   Widget build(BuildContext context) {
     ref.listen(profileProvider.select((p) => p.settings.music),
         (_, on) => ref.read(musicServiceProvider).setEnabled(on));
+    final theme = ref.watch(profileProvider.select((p) => p.settings.theme));
     return MaterialApp(
       title: 'Number Flow',
       debugShowCheckedModeBanner: false,
-      theme: buildAppTheme(),
+      theme: buildAppTheme(theme),
+      themeAnimationDuration: const Duration(milliseconds: 350),
+      // Screens without an app bar still need status bar icons that match.
+      builder: (context, child) => AnnotatedRegion<SystemUiOverlayStyle>(
+        value: theme.colors.brightness == Brightness.dark
+            ? SystemUiOverlayStyle.light
+            : SystemUiOverlayStyle.dark,
+        child: child!,
+      ),
       locale: const Locale('ru'),
       supportedLocales: const [Locale('ru'), Locale('en')],
       localizationsDelegates: GlobalMaterialLocalizations.delegates,

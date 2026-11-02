@@ -8,6 +8,7 @@ import '../../core/day_key.dart';
 import '../../game/models/bonus_type.dart';
 import '../../game/modes/mode_registry.dart';
 import '../../services/storage/storage_service.dart';
+import '../../shared/theme/game_themes.dart';
 import '../achievements/achievement.dart';
 import '../achievements/daily_quests.dart';
 import '../settings/app_settings.dart';
@@ -101,6 +102,25 @@ class ProfileController extends Notifier<PlayerProfile> {
       coins: state.coins - type.price,
       bonuses: {...state.bonuses, type: state.bonusCount(type) + 1},
     ));
+    return true;
+  }
+
+  /// Buys [theme] and switches to it. False when it is owned already or
+  /// coins are short.
+  bool buyTheme(GameTheme theme) {
+    if (state.ownsTheme(theme) || state.coins < theme.price) return false;
+    _commit(state.copyWith(
+      coins: state.coins - theme.price,
+      ownedThemes: {...state.ownedThemes, theme},
+      settings: state.settings.copyWith(theme: theme),
+    ));
+    return true;
+  }
+
+  /// Switches to [theme] if the player owns it.
+  bool selectTheme(GameTheme theme) {
+    if (!state.ownsTheme(theme)) return false;
+    updateSettings((s) => s.copyWith(theme: theme));
     return true;
   }
 
@@ -232,7 +252,8 @@ class ProfileController extends Notifier<PlayerProfile> {
       _commit(state.copyWith(settings: change(state.settings)));
 
   void resetProgress() {
-    final settings = state.settings;
+    // Bought themes go with the coins; the rest of the settings stay.
+    final settings = state.settings.copyWith(theme: GameTheme.classic);
     _commit(_rollDay(PlayerProfile.fresh()).copyWith(settings: settings));
   }
 }

@@ -1,4 +1,5 @@
 import '../../game/models/bonus_type.dart';
+import '../../shared/theme/game_themes.dart';
 import '../achievements/daily_quests.dart';
 import '../settings/app_settings.dart';
 import '../statistics/player_stats.dart';
@@ -22,6 +23,7 @@ class PlayerProfile {
     this.adCoinsDay,
     this.adCoinsCount = 0,
     this.adsRemoved = false,
+    this.ownedThemes = const {},
     this.settings = const AppSettings(),
   });
 
@@ -45,10 +47,14 @@ class PlayerProfile {
 
   /// Reserved for a future "remove ads" purchase; disables interstitials.
   final bool adsRemoved;
+
+  /// Bought themes; free ones are not listed.
+  final Set<GameTheme> ownedThemes;
   final AppSettings settings;
 
   int bonusCount(BonusType t) => bonuses[t] ?? 0;
   int bestFor(String modeId) => bestScores[modeId] ?? 0;
+  bool ownsTheme(GameTheme t) => t.isFree || ownedThemes.contains(t);
 
   PlayerProfile copyWith({
     int? coins,
@@ -65,6 +71,7 @@ class PlayerProfile {
     int? adCoinsDay,
     int? adCoinsCount,
     bool? adsRemoved,
+    Set<GameTheme>? ownedThemes,
     AppSettings? settings,
   }) =>
       PlayerProfile(
@@ -82,6 +89,7 @@ class PlayerProfile {
         adCoinsDay: adCoinsDay ?? this.adCoinsDay,
         adCoinsCount: adCoinsCount ?? this.adCoinsCount,
         adsRemoved: adsRemoved ?? this.adsRemoved,
+        ownedThemes: ownedThemes ?? this.ownedThemes,
         settings: settings ?? this.settings,
       );
 
@@ -100,11 +108,20 @@ class PlayerProfile {
         'adCoinsDay': adCoinsDay,
         'adCoinsCount': adCoinsCount,
         'adsRemoved': adsRemoved,
+        'themes': [for (final t in ownedThemes) t.name],
         'settings': settings.toJson(),
       };
 
   static PlayerProfile fromJson(Map<String, dynamic> j) {
     final bonuses = j['bonuses'] as Map<String, dynamic>? ?? const {};
+    final themes = {
+      for (final name in (j['themes'] as List<dynamic>? ?? const []).cast<String>())
+        ?GameTheme.values.asNameMap()[name],
+    };
+    var settings = AppSettings.fromJson(j['settings'] as Map<String, dynamic>?);
+    if (!settings.theme.isFree && !themes.contains(settings.theme)) {
+      settings = settings.copyWith(theme: GameTheme.classic);
+    }
     return PlayerProfile(
       coins: j['coins'] as int? ?? Economy.startingCoins,
       bonuses: {for (final t in BonusType.values) t: bonuses[t.name] as int? ?? 0},
@@ -122,7 +139,8 @@ class PlayerProfile {
       adCoinsDay: j['adCoinsDay'] as int?,
       adCoinsCount: j['adCoinsCount'] as int? ?? 0,
       adsRemoved: j['adsRemoved'] as bool? ?? false,
-      settings: AppSettings.fromJson(j['settings'] as Map<String, dynamic>?),
+      ownedThemes: themes,
+      settings: settings,
     );
   }
 }

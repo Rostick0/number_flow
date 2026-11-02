@@ -64,8 +64,8 @@ class _BonusButton extends StatelessWidget {
     final enabled = data.active
         ? data.type == BonusType.remove
         : data.usable && data.usesLeft > 0;
-    final color = data.active ? AppColors.accent : AppColors.surface;
-    final fg = data.active ? Colors.white : (enabled ? AppColors.ink : AppColors.inkSoft);
+    final color = data.active ? context.colors.accent : context.colors.surface;
+    final fg = data.active ? Colors.white : (enabled ? context.colors.ink : context.colors.inkSoft);
     return Semantics(
       button: true,
       label: '${data.type.title}: ${data.type.description}',
@@ -128,16 +128,17 @@ class _Badge extends StatelessWidget {
       height: 22,
       padding: const EdgeInsets.symmetric(horizontal: 5),
       decoration: BoxDecoration(
-        color: empty ? AppColors.success : AppColors.ink,
+        color: empty ? context.colors.success : context.colors.ink,
         borderRadius: BorderRadius.circular(11),
-        border: Border.all(color: AppColors.background, width: 2),
+        border: Border.all(color: context.colors.background, width: 2),
       ),
       alignment: Alignment.center,
       child: empty
           ? const Icon(Icons.add_rounded, size: 14, color: Colors.white)
           : Text(
               '$stock',
-              style: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.w800),
+              // Surface rather than white: ink is light on dark themes.
+              style: TextStyle(color: context.colors.surface, fontSize: 11, fontWeight: FontWeight.w800),
             ),
     );
   }

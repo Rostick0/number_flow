@@ -42,7 +42,11 @@ class _FlowBarState extends State<FlowBar> with SingleTickerProviderStateMixin {
         height: 6,
         width: double.infinity,
         child: CustomPaint(
-          painter: _FlowBarPainter(_value, widget.slow ? AppColors.ice : AppColors.accent),
+          painter: _FlowBarPainter(
+            _value,
+            widget.slow ? context.colors.ice : context.colors.accent,
+            context.colors.board,
+          ),
         ),
       ),
     );
@@ -50,17 +54,18 @@ class _FlowBarState extends State<FlowBar> with SingleTickerProviderStateMixin {
 }
 
 class _FlowBarPainter extends CustomPainter {
-  _FlowBarPainter(this.value, this.color) : super(repaint: value);
+  _FlowBarPainter(this.value, this.color, this.track) : super(repaint: value);
 
   final ValueNotifier<double> value;
   final Color color;
+  final Color track;
 
   @override
   void paint(Canvas canvas, Size size) {
     final r = Radius.circular(size.height / 2);
     canvas.drawRRect(
       RRect.fromRectAndRadius(Offset.zero & size, r),
-      Paint()..color = AppColors.board,
+      Paint()..color = track,
     );
     final w = size.width * value.value.clamp(0.0, 1.0);
     if (w <= 0) return;
@@ -71,7 +76,7 @@ class _FlowBarPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(_FlowBarPainter old) => old.color != color;
+  bool shouldRepaint(_FlowBarPainter old) => old.color != color || old.track != track;
 }
 
 /// How full the board is; turns red as overflow approaches.
@@ -83,13 +88,13 @@ class FillIndicator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = ratio < 0.6
-        ? AppColors.success
+        ? context.colors.success
         : ratio < 0.8
-            ? AppColors.coin
-            : AppColors.danger;
+            ? context.colors.coin
+            : context.colors.danger;
     return Row(
       children: [
-        const Icon(Icons.water_drop_rounded, size: 16, color: AppColors.inkSoft),
+        Icon(Icons.water_drop_rounded, size: 16, color: context.colors.inkSoft),
         const SizedBox(width: 6),
         Expanded(
           child: ClipRRect(
@@ -100,7 +105,7 @@ class FillIndicator extends StatelessWidget {
               builder: (context, v, _) => LinearProgressIndicator(
                 value: v,
                 minHeight: 8,
-                backgroundColor: AppColors.board,
+                backgroundColor: context.colors.board,
                 valueColor: AlwaysStoppedAnimation(color),
               ),
             ),
@@ -133,9 +138,9 @@ class NextTilePreview extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        const Text(
+        Text(
           'ДАЛЕЕ',
-          style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800, color: AppColors.inkSoft, letterSpacing: 1),
+          style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800, color: context.colors.inkSoft, letterSpacing: 1),
         ),
         const SizedBox(height: 4),
         AnimatedSwitcher(

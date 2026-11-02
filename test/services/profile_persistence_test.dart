@@ -3,15 +3,18 @@ import 'dart:math' as math;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:number_flow/core/clock.dart';
+import 'package:number_flow/features/settings/app_settings.dart';
 import 'package:number_flow/features/gameplay/saved_game.dart';
 import 'package:number_flow/features/profile/economy.dart';
 import 'package:number_flow/features/profile/game_result.dart';
+import 'package:number_flow/features/profile/player_profile.dart';
 import 'package:number_flow/features/profile/profile_controller.dart';
 import 'package:number_flow/game/engine/game_engine.dart';
 import 'package:number_flow/game/models/bonus_type.dart';
 import 'package:number_flow/game/models/session_stats.dart';
 import 'package:number_flow/game/modes/game_mode.dart';
 import 'package:number_flow/services/storage/storage_service.dart';
+import 'package:number_flow/shared/theme/game_themes.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// Simulates an app process: fresh SharedPreferences instance over the
@@ -76,6 +79,53 @@ void main() {
     expect(p.stats.gamesPlayed, 1);
     expect(p.stats.totalMerges, 10);
     expect(p.stats.maxTile, 32);
+  });
+
+  test('themes are bought once, switch on purchase and survive a restart', () async {
+    final app = await _App.launch();
+    expect(app.container.read(profileProvider).settings.theme, GameTheme.classic);
+    expect(app.profile.selectTheme(GameTheme.neon), isFalse);
+    expect(app.profile.buyTheme(GameTheme.neon), isFalse, reason: 'not enough coins');
+
+    app.profile.addCoins(GameTheme.neon.price);
+    final before = app.container.read(profileProvider).coins;
+    expect(app.profile.buyTheme(GameTheme.neon), isTrue);
+    expect(app.profile.buyTheme(GameTheme.neon), isFalse, reason: 'already owned');
+    var p = app.container.read(profileProvider);
+    expect(p.coins, before - GameTheme.neon.price);
+    expect(p.settings.theme, GameTheme.neon);
+
+    expect(app.profile.selectTheme(GameTheme.classic), isTrue);
+    final restarted = await _App.launch(await app.persisted());
+    p = restarted.container.read(profileProvider);
+    expect(p.ownsTheme(GameTheme.neon), isTrue);
+    expect(p.ownsTheme(GameTheme.night), isFalse);
+    expect(p.settings.theme, GameTheme.classic);
+    expect(restarted.profile.selectTheme(GameTheme.neon), isTrue);
+  });
+
+  test('progress reset takes bought themes back', () async {
+    final app = await _App.launch();
+    app.profile.addCoins(GameTheme.night.price);
+    app.profile.buyTheme(GameTheme.night);
+    app.profile.resetProgress();
+    final p = app.container.read(profileProvider);
+    expect(p.ownsTheme(GameTheme.night), isFalse);
+    expect(p.settings.theme, GameTheme.classic);
+  });
+
+  test('a saved theme that is not owned falls back to classic', () async {
+    final app = await _App.launch();
+    final json = app.container.read(profileProvider).toJson()
+      ..['settings'] = const AppSettings(theme: GameTheme.neon).toJson();
+    final p = PlayerProfile.fromJson(json);
+    expect(p.settings.theme, GameTheme.classic);
+  });
+
+  test('an unknown saved theme falls back to classic', () {
+    final s = AppSettings.fromJson({'theme': 'removed_theme'});
+    expect(s.theme, GameTheme.classic);
+    expect(AppSettings.fromJson({}).theme, GameTheme.classic);
   });
 
   test('a lower score does not replace the record', () async {

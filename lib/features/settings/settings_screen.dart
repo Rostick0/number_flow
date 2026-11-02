@@ -6,6 +6,7 @@ import '../../shared/widgets/common.dart';
 import '../gameplay/saved_game.dart';
 import '../profile/profile_controller.dart';
 import 'rules_dialog.dart';
+import 'theme_picker.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -15,12 +16,12 @@ class SettingsScreen extends ConsumerWidget {
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Сбросить прогресс?'),
-        content: const Text('Монеты, бонусы, рекорды, статистика и достижения будут удалены.'),
+        content: const Text('Монеты, бонусы, купленные темы, рекорды, статистика и достижения будут удалены.'),
         actions: [
           TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Отмена')),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
-            style: TextButton.styleFrom(foregroundColor: AppColors.danger),
+            style: TextButton.styleFrom(foregroundColor: context.colors.danger),
             child: const Text('Сбросить'),
           ),
         ],
@@ -69,6 +70,17 @@ class SettingsScreen extends ConsumerWidget {
               ),
             ),
             const SizedBox(height: 12),
+            const Panel(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Тема', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800)),
+                  SizedBox(height: 12),
+                  ThemePicker(),
+                ],
+              ),
+            ),
+            const SizedBox(height: 12),
             Panel(
               padding: const EdgeInsets.symmetric(vertical: 4),
               child: Column(
@@ -80,10 +92,10 @@ class SettingsScreen extends ConsumerWidget {
                     onTap: () => showRulesDialog(context),
                   ),
                   ListTile(
-                    leading: const Icon(Icons.restart_alt_rounded, color: AppColors.danger),
-                    title: const Text(
+                    leading: Icon(Icons.restart_alt_rounded, color: context.colors.danger),
+                    title: Text(
                       'Сбросить прогресс',
-                      style: TextStyle(fontWeight: FontWeight.w700, color: AppColors.danger),
+                      style: TextStyle(fontWeight: FontWeight.w700, color: context.colors.danger),
                     ),
                     onTap: () => _confirmReset(context, ref),
                   ),
@@ -91,10 +103,10 @@ class SettingsScreen extends ConsumerWidget {
               ),
             ),
             const SizedBox(height: 24),
-            const Text(
+            Text(
               'Number Flow 1.0.0\nПрогресс хранится только на этом устройстве.',
               textAlign: TextAlign.center,
-              style: TextStyle(color: AppColors.inkSoft),
+              style: TextStyle(color: context.colors.inkSoft),
             ),
           ],
         ),

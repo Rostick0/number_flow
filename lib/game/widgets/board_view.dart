@@ -92,7 +92,7 @@ class _BoardViewState extends State<BoardView> {
             children: [
               Positioned.fill(
                 child: RepaintBoundary(
-                  child: CustomPaint(painter: _GridPainter(g)),
+                  child: CustomPaint(painter: _GridPainter(g, context.colors)),
                 ),
               ),
               if (s.inDanger)
@@ -148,19 +148,20 @@ class _BoardViewState extends State<BoardView> {
 }
 
 class _GridPainter extends CustomPainter {
-  _GridPainter(this.g);
+  _GridPainter(this.g, this.colors);
 
   final BoardGeometry g;
+  final AppColors colors;
 
   @override
   void paint(Canvas canvas, Size size) {
-    final boardPaint = Paint()..color = AppColors.board;
+    final boardPaint = Paint()..color = colors.board;
     canvas.drawRRect(
       RRect.fromRectAndRadius(Offset.zero & size, Radius.circular(g.extent * 0.05)),
       boardPaint,
     );
-    final cellPaint = Paint()..color = AppColors.cell;
-    final entryPaint = Paint()..color = Color.lerp(AppColors.cell, AppColors.accent, 0.08)!;
+    final cellPaint = Paint()..color = colors.cell;
+    final entryPaint = Paint()..color = Color.lerp(colors.cell, colors.accent, 0.08)!;
     final radius = Radius.circular(g.cell * 0.22);
     for (var r = 0; r < g.size; r++) {
       for (var c = 0; c < g.size; c++) {
@@ -170,7 +171,7 @@ class _GridPainter extends CustomPainter {
     }
     // Flow direction hint: small chevrons under the entry row.
     final arrow = Paint()
-      ..color = AppColors.accent.withValues(alpha: 0.25)
+      ..color = colors.accent.withValues(alpha: 0.25)
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round
       ..strokeWidth = g.gap * 0.35;
@@ -184,7 +185,7 @@ class _GridPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(_GridPainter old) => old.g.extent != g.extent || old.g.size != g.size;
+  bool shouldRepaint(_GridPainter old) => old.g.extent != g.extent || old.g.size != g.size || old.colors != colors;
 }
 
 class _DangerPulse extends StatefulWidget {
@@ -212,7 +213,7 @@ class _DangerPulseState extends State<_DangerPulse> with SingleTickerProviderSta
       opacity: Tween(begin: 0.25, end: 0.7).animate(_c),
       child: DecoratedBox(
         decoration: BoxDecoration(
-          color: AppColors.danger.withValues(alpha: 0.35),
+          color: context.colors.danger.withValues(alpha: 0.35),
           borderRadius: BorderRadius.circular(14),
         ),
       ),

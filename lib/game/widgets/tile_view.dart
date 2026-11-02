@@ -104,10 +104,10 @@ class TileFace extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final radius = BorderRadius.circular(size * 0.22);
-    final base = tile.isStone ? AppColors.stone : TilePalette.colorFor(tile.value);
-    final edge = tile.isStone ? AppColors.stoneDark : TilePalette.edgeFor(base);
+    final base = tile.isStone ? context.colors.stone : context.colors.tileColor(tile.value);
+    final edge = tile.isStone ? context.colors.stoneDark : AppColors.edgeFor(base);
     final border = removeTarget
-        ? Border.all(color: AppColors.danger, width: size * 0.06)
+        ? Border.all(color: context.colors.danger, width: size * 0.06)
         : selected
             ? Border.all(color: Colors.white, width: size * 0.07)
             : null;
@@ -155,7 +155,7 @@ class _Label extends StatelessWidget {
         text,
         maxLines: 1,
         style: TextStyle(
-          color: TilePalette.textFor(tile.value),
+          color: context.colors.tileText(tile.value),
           fontSize: size * scale,
           fontWeight: FontWeight.w900,
           height: 1,
@@ -172,13 +172,17 @@ class _StoneMarks extends StatelessWidget {
   final double size;
 
   @override
-  Widget build(BuildContext context) => CustomPaint(painter: _StonePainter());
+  Widget build(BuildContext context) => CustomPaint(painter: _StonePainter(context.colors.stoneDark));
 }
 
 class _StonePainter extends CustomPainter {
+  _StonePainter(this.color);
+
+  final Color color;
+
   @override
   void paint(Canvas canvas, Size size) {
-    final paint = Paint()..color = AppColors.stoneDark.withValues(alpha: 0.55);
+    final paint = Paint()..color = color.withValues(alpha: 0.55);
     final s = size.width;
     canvas.drawCircle(Offset(s * 0.32, s * 0.36), s * 0.09, paint);
     canvas.drawCircle(Offset(s * 0.64, s * 0.3), s * 0.06, paint);
@@ -187,7 +191,7 @@ class _StonePainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(_StonePainter old) => false;
+  bool shouldRepaint(_StonePainter old) => old.color != color;
 }
 
 class _Ice extends StatelessWidget {
@@ -201,7 +205,7 @@ class _Ice extends StatelessWidget {
   Widget build(BuildContext context) {
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: AppColors.ice.withValues(alpha: 0.45),
+        color: context.colors.ice.withValues(alpha: 0.45),
         borderRadius: radius,
         border: Border.all(color: Colors.white.withValues(alpha: 0.9), width: size * 0.045),
       ),

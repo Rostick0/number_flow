@@ -1,37 +1,61 @@
 import 'package:flutter/material.dart';
 
-class AppColors {
-  static const background = Color(0xFFF4F1EA);
-  static const surface = Color(0xFFFFFFFF);
-  static const board = Color(0xFFE6E0D4);
-  static const cell = Color(0xFFEFEAE1);
-  static const ink = Color(0xFF2B2D42);
-  static const inkSoft = Color(0xFF6B6E80);
-  static const accent = Color(0xFF5B6CFF);
-  static const coin = Color(0xFFF2B33D);
-  static const danger = Color(0xFFE5534B);
-  static const success = Color(0xFF3DBE8B);
-  static const ice = Color(0xFFBFE6FF);
-  static const stone = Color(0xFF9AA0A6);
-  static const stoneDark = Color(0xFF7D838A);
-}
+/// Colors of one visual theme, including the tile palette.
+///
+/// Read it with `context.colors`: widgets that do rebuild and cross-fade when
+/// the player switches themes. Painters take the colors as fields so their
+/// `shouldRepaint` notices the change.
+@immutable
+class AppColors extends ThemeExtension<AppColors> {
+  const AppColors({
+    required this.brightness,
+    required this.background,
+    required this.surface,
+    required this.board,
+    required this.cell,
+    required this.ink,
+    required this.inkSoft,
+    required this.accent,
+    this.coin = const Color(0xFFF2B33D),
+    this.coinEdge = const Color(0xFFD99A22),
+    required this.danger,
+    required this.success,
+    this.ice = const Color(0xFFBFE6FF),
+    required this.stone,
+    required this.stoneDark,
+    required this.tiles,
+    required this.tileBeyond,
+    required this.tileInkDark,
+    this.darkTextOn = const {2},
+  });
 
-/// Cool-to-warm progression: each doubling moves one step along the wheel.
-class TilePalette {
-  static const _colors = <Color>[
-    Color(0xFF7FD1C7), // 2
-    Color(0xFF5DB8E8), // 4
-    Color(0xFF5B8DEF), // 8
-    Color(0xFF6C6CE5), // 16
-    Color(0xFF8F5BD9), // 32
-    Color(0xFFC254C4), // 64
-    Color(0xFFE2558F), // 128
-    Color(0xFFF06B5E), // 256
-    Color(0xFFF58A3D), // 512
-    Color(0xFFF2B33D), // 1024
-    Color(0xFFD9B530), // 2048
-  ];
-  static const _beyond = Color(0xFF2B2D42);
+  final Brightness brightness;
+  final Color background;
+  final Color surface;
+  final Color board;
+  final Color cell;
+  final Color ink;
+  final Color inkSoft;
+  final Color accent;
+  final Color coin;
+  final Color coinEdge;
+  final Color danger;
+  final Color success;
+  final Color ice;
+  final Color stone;
+  final Color stoneDark;
+
+  /// Tile colors from 2 upwards, one per doubling.
+  final List<Color> tiles;
+
+  /// Color of tiles past the end of [tiles]; their number is drawn in [coin].
+  final Color tileBeyond;
+
+  /// Text color for tiles too light for white text.
+  final Color tileInkDark;
+
+  /// Tile values drawn with [tileInkDark] instead of white.
+  final Set<int> darkTextOn;
 
   static int _index(int value) {
     var i = 0;
@@ -43,18 +67,54 @@ class TilePalette {
     return i;
   }
 
-  static Color colorFor(int value) {
+  Color tileColor(int value) {
     final i = _index(value);
-    return i < _colors.length ? _colors[i] : _beyond;
+    return i < tiles.length ? tiles[i] : tileBeyond;
   }
 
-  static Color textFor(int value) {
-    if (value == 2) return const Color(0xFF1F4D48);
-    if (_index(value) >= _colors.length) return AppColors.coin;
+  Color tileText(int value) {
+    if (darkTextOn.contains(value)) return tileInkDark;
+    if (_index(value) >= tiles.length) return coin;
     return Colors.white;
   }
 
   /// Darker shade used for the tile's bottom edge.
-  static Color edgeFor(Color c) =>
-      Color.lerp(c, Colors.black, 0.18)!;
+  static Color edgeFor(Color c) => Color.lerp(c, Colors.black, 0.18)!;
+
+  @override
+  AppColors copyWith() => this;
+
+  @override
+  AppColors lerp(AppColors? other, double t) {
+    if (other == null) return this;
+    Color l(Color a, Color b) => Color.lerp(a, b, t)!;
+    final near = t < 0.5 ? this : other;
+    return AppColors(
+      brightness: near.brightness,
+      background: l(background, other.background),
+      surface: l(surface, other.surface),
+      board: l(board, other.board),
+      cell: l(cell, other.cell),
+      ink: l(ink, other.ink),
+      inkSoft: l(inkSoft, other.inkSoft),
+      accent: l(accent, other.accent),
+      coin: l(coin, other.coin),
+      coinEdge: l(coinEdge, other.coinEdge),
+      danger: l(danger, other.danger),
+      success: l(success, other.success),
+      ice: l(ice, other.ice),
+      stone: l(stone, other.stone),
+      stoneDark: l(stoneDark, other.stoneDark),
+      tiles: [
+        for (var i = 0; i < tiles.length && i < other.tiles.length; i++) l(tiles[i], other.tiles[i]),
+      ],
+      tileBeyond: l(tileBeyond, other.tileBeyond),
+      tileInkDark: l(tileInkDark, other.tileInkDark),
+      darkTextOn: near.darkTextOn,
+    );
+  }
+}
+
+extension AppColorsOf on BuildContext {
+  AppColors get colors => Theme.of(this).extension<AppColors>()!;
 }

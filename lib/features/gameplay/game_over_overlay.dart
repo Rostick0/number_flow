@@ -62,7 +62,7 @@ class _GameOverOverlayState extends ConsumerState<GameOverOverlay> {
           Text(
             timeUp ? 'Время вышло' : 'Поле переполнено',
             textAlign: TextAlign.center,
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w800, color: AppColors.inkSoft),
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800, color: context.colors.inkSoft),
           ),
           const SizedBox(height: 6),
           Center(
@@ -76,7 +76,7 @@ class _GameOverOverlayState extends ConsumerState<GameOverOverlay> {
             Text(
               'Рекорд: ${summary.previousBest}',
               textAlign: TextAlign.center,
-              style: const TextStyle(color: AppColors.inkSoft, fontWeight: FontWeight.w700),
+              style: TextStyle(color: context.colors.inkSoft, fontWeight: FontWeight.w700),
             ),
           const SizedBox(height: 16),
           _StatsRow(summary: summary),
@@ -87,7 +87,7 @@ class _GameOverOverlayState extends ConsumerState<GameOverOverlay> {
             ValueListenableBuilder<bool>(
               valueListenable: ref.read(adServiceProvider).rewardedReady,
               builder: (context, ready, _) => FilledButton.icon(
-                style: FilledButton.styleFrom(backgroundColor: AppColors.coin),
+                style: FilledButton.styleFrom(backgroundColor: context.colors.coin),
                 onPressed: ready && !summary.doubled && !_busy ? _double : null,
                 icon: const Icon(Icons.play_circle_fill_rounded),
                 label: Text(
@@ -131,7 +131,7 @@ class _RecordBadge extends StatelessWidget {
         child: Container(
           margin: const EdgeInsets.only(top: 6),
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
-          decoration: BoxDecoration(color: AppColors.coin, borderRadius: BorderRadius.circular(14)),
+          decoration: BoxDecoration(color: context.colors.coin, borderRadius: BorderRadius.circular(14)),
           child: const Row(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -165,7 +165,7 @@ class _StatsRow extends StatelessWidget {
               else
                 const SizedBox(height: 34),
               const SizedBox(height: 4),
-              const Text('Макс. число', style: TextStyle(fontSize: 12, color: AppColors.inkSoft)),
+              Text('Макс. число', style: TextStyle(fontSize: 12, color: context.colors.inkSoft)),
             ],
           ),
         ),
@@ -192,7 +192,7 @@ class _Stat extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 4),
-        Text(label, style: const TextStyle(fontSize: 12, color: AppColors.inkSoft)),
+        Text(label, style: TextStyle(fontSize: 12, color: context.colors.inkSoft)),
       ],
     );
   }
@@ -212,7 +212,7 @@ class _Rewards extends StatelessWidget {
       for (final a in summary.unlockedAchievements) 'Достижение: $a',
     ];
     return Panel(
-      color: AppColors.background,
+      color: context.colors.background,
       padding: const EdgeInsets.all(12),
       child: Column(
         children: [
@@ -233,18 +233,18 @@ class _Rewards extends StatelessWidget {
               padding: const EdgeInsets.only(top: 6),
               child: Row(
                 children: [
-                  const Icon(Icons.check_circle_rounded, size: 16, color: AppColors.success),
+                  Icon(Icons.check_circle_rounded, size: 16, color: context.colors.success),
                   const SizedBox(width: 6),
                   Expanded(child: Text(n, style: const TextStyle(fontWeight: FontWeight.w700))),
                 ],
               ),
             ),
           if (summary.completedQuests.isNotEmpty || summary.unlockedAchievements.isNotEmpty)
-            const Padding(
+            Padding(
               padding: EdgeInsets.only(top: 6),
               child: Text(
                 'Забери награды в разделе «Задания»',
-                style: TextStyle(fontSize: 12, color: AppColors.inkSoft),
+                style: TextStyle(fontSize: 12, color: context.colors.inkSoft),
               ),
             ),
         ],

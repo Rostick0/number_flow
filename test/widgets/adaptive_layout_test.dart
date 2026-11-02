@@ -19,6 +19,7 @@ import 'package:number_flow/features/statistics/statistics_screen.dart';
 import 'package:number_flow/game/models/bonus_type.dart';
 import 'package:number_flow/services/storage/storage_service.dart';
 import 'package:number_flow/shared/theme/app_theme.dart';
+import 'package:number_flow/shared/theme/game_themes.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 final _now = DateTime(2026, 11, 1, 12);
@@ -31,7 +32,12 @@ const _sizes = {
   'short landscape-like': Size(640, 480),
 };
 
-Future<ProviderContainer> _pump(WidgetTester tester, Widget home, Size size) async {
+Future<ProviderContainer> _pump(
+  WidgetTester tester,
+  Widget home,
+  Size size, {
+  GameTheme theme = GameTheme.classic,
+}) async {
   tester.view.devicePixelRatio = 2;
   tester.view.physicalSize = size * 2;
   addTearDown(tester.view.reset);
@@ -53,7 +59,7 @@ Future<ProviderContainer> _pump(WidgetTester tester, Widget home, Size size) asy
   ]);
   await tester.pumpWidget(UncontrolledProviderScope(
     container: container,
-    child: MaterialApp(theme: buildAppTheme(), home: home),
+    child: MaterialApp(theme: buildAppTheme(theme), home: home),
   ));
   await tester.pump(const Duration(milliseconds: 500));
   return container;
@@ -99,6 +105,53 @@ void main() {
       }
     });
   }
+
+  for (final theme in GameTheme.values) {
+    testWidgets('game screen renders in the ${theme.name} theme', (tester) async {
+      final container = await _pump(
+        tester,
+        const GameScreen(launch: GameLaunch('classic')),
+        const Size(390, 844),
+        theme: theme,
+      );
+      expect(find.text('ДАЛЕЕ'), findsOneWidget);
+      expect(tester.takeException(), isNull);
+      await _unmount(tester, container);
+    });
+  }
+
+  testWidgets('a locked theme is bought from its card', (tester) async {
+    final container = await _pump(tester, const SettingsScreen(), const Size(390, 844));
+    for (final theme in GameTheme.values) {
+      expect(find.text(theme.title), findsOneWidget);
+    }
+    final buy = find.widgetWithText(FilledButton, '${GameTheme.night.price}');
+
+    // Starting coins are not enough: the offer opens with buying disabled.
+    await tester.tap(find.text(GameTheme.night.title));
+    await tester.pump(const Duration(milliseconds: 300));
+    expect(tester.widget<FilledButton>(buy).onPressed, isNull);
+    await tester.tap(find.text('Отмена'));
+    await tester.pump(const Duration(milliseconds: 300));
+    expect(container.read(profileProvider).settings.theme, GameTheme.classic);
+
+    container.read(profileProvider.notifier).addCoins(GameTheme.night.price);
+    final coins = container.read(profileProvider).coins;
+    await tester.tap(find.text(GameTheme.night.title));
+    await tester.pump(const Duration(milliseconds: 300));
+    await tester.tap(buy);
+    await tester.pump(const Duration(milliseconds: 300));
+    final p = container.read(profileProvider);
+    expect(p.settings.theme, GameTheme.night);
+    expect(p.coins, coins - GameTheme.night.price);
+    expect(find.text('Выбрана'), findsOneWidget);
+
+    await tester.tap(find.text(GameTheme.classic.title));
+    await tester.pump();
+    expect(container.read(profileProvider).settings.theme, GameTheme.classic);
+    await tester.pump(const Duration(seconds: 3));
+    await _unmount(tester, container);
+  });
 
   testWidgets('pause overlay opens and resumes', (tester) async {
     final container =
